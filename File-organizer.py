@@ -9,11 +9,6 @@ from tkinter import filedialog
 window = tk.Tk()
 window.title('File Mover')
 
-# Create the select folder button
-select_folder_button = ttk.Button(window, text='Select Folder', command=select_folder)
-select_folder_button.grid(row=0, column=0, padx=5, pady=5)
-
-# Function to select the folder
 def select_folder():
     # Create a file selection dialog
     folder_path = filedialog.askdirectory()
@@ -30,6 +25,12 @@ def select_folder():
         if last_modified_date < three_months_ago:
             # Move the file to the destination directory
             shutil.move(file_path, os.path.join(folder_path, 'archive', filename))
+
+
+# Create the select folder button
+select_folder_button = ttk.Button(window, text='Select Folder', command=select_folder)
+select_folder_button.grid(row=0, column=0, padx=5, pady=5)
+
 
 # Run the GUI
 window.mainloop()
