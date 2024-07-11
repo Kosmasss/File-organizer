@@ -1,30 +1,35 @@
 import os
 import shutil
 from datetime import datetime, timedelta
-import argparse
+import tkinter as tk
+from tkinter import ttk
+from tkinter import filedialog
 
-# Parse command-line arguments
-parser = argparse.ArgumentParser()
-parser.add_argument('directory', type=str, help='Directory where the files are located')
-parser.add_argument('months', type=int, help='Number of months to look back')
-args = parser.parse_args()
+# Create the main window
+window = tk.Tk()
+window.title('File Mover')
 
-# Get the directory and number of months from the command-line arguments
-directory = args.directory
-months = args.months
+# Create the select folder button
+select_folder_button = ttk.Button(window, text='Select Folder', command=select_folder)
+select_folder_button.grid(row=0, column=0, padx=5, pady=5)
 
-# Get the current date and time
-current_date = datetime.now()
+# Function to select the folder
+def select_folder():
+    # Create a file selection dialog
+    folder_path = filedialog.askdirectory()
+    # Get the current date and time
+    current_date = datetime.now()
+    # Calculate the date three months ago
+    three_months_ago = current_date - timedelta(days=90)
+    # Loop through all files in the folder
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        # Get the last modified date of the file
+        last_modified_date = datetime.fromtimestamp(os.path.getmtime(file_path))
+        # Check if the file hasn't been modified in the last three months
+        if last_modified_date < three_months_ago:
+            # Move the file to the destination directory
+            shutil.move(file_path, os.path.join(folder_path, 'archive', filename))
 
-# Calculate the date months ago
-months_ago = current_date - timedelta(days=months*30)
-
-# Loop through all files in the directory
-for filename in os.listdir(directory):
-    file_path = os.path.join(directory, filename)
-    # Get the last modified date of the file
-    last_modified_date = datetime.fromtimestamp(os.path.getmtime(file_path))
-    # Check if the file hasn't been modified in the last months
-    if last_modified_date < months_ago:
-        # Move the file to the destination directory
-        shutil.move(file_path, os.path.join(directory, 'archived', filename))
+# Run the GUI
+window.mainloop()
