@@ -1,25 +1,30 @@
 import os
 import shutil
 from datetime import datetime, timedelta
+import argparse
 
-# Specify the directory where the files are located
-directory = '/path/to/your/directory'
+# Parse command-line arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('directory', type=str, help='Directory where the files are located')
+parser.add_argument('months', type=int, help='Number of months to look back')
+args = parser.parse_args()
 
-# Specify the directory where the files should be moved
-destination_directory = '/path/to/destination/directory'
+# Get the directory and number of months from the command-line arguments
+directory = args.directory
+months = args.months
 
 # Get the current date and time
 current_date = datetime.now()
 
-# Calculate the date three months ago
-three_months_ago = current_date - timedelta(days=90)
+# Calculate the date months ago
+months_ago = current_date - timedelta(days=months*30)
 
 # Loop through all files in the directory
 for filename in os.listdir(directory):
     file_path = os.path.join(directory, filename)
     # Get the last modified date of the file
     last_modified_date = datetime.fromtimestamp(os.path.getmtime(file_path))
-    # Check if the file hasn't been modified in the last three months
-    if last_modified_date < three_months_ago:
+    # Check if the file hasn't been modified in the last months
+    if last_modified_date < months_ago:
         # Move the file to the destination directory
-        shutil.move(file_path, os.path.join(destination_directory, filename))
+        shutil.move(file_path, os.path.join(directory, 'archived', filename))
