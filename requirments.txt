@@ -1,4 +1,0 @@
-# os>=0.1
-# shutil>=0.1
-# datetime>=0.1
-# tkinter>=0.1
